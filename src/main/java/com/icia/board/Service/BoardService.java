@@ -51,4 +51,8 @@ public class BoardService {
         BoardEntity boardEntity = boardRepository.findById(id).orElseThrow(()-> new NoSuchElementException("글이 없습니다."));
        return BoardDTO.toDTO(boardEntity);
     }
+
+    public void delete(Long id) {
+        boardRepository.deleteById(id);
+    }
 }

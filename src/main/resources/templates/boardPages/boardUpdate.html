@@ -7,27 +7,29 @@
 <div th:replace="component/header :: header"></div>
 <div th:replace="component/nav :: nav"></div>
 <form action="/board/update" method="post">
-  <input type="hidden" name="id" th:value="${board.id}">
-  <input type="hidden" name="boardWriter" th:value="${board.boardWriter}">
-  <input type="text" name="boardTitle" th:value="${board.boardTitle}">
-  <input type="text" name="boardPass">
-  <input type="text" name="boardContents" th:value="${board.boardContents}">
+  <input type="hidden" name="id" class="form-control" th:value="${board.id}">
+  작성자 : <input type="text" name="boardWriter" class="form-control" th:value="${board.boardWriter}">
+
+  제목 : <input type="text" name="boardTitle" class="form-control" th:value="${board.boardTitle}">
+  <input type="hidden" name="boardPass" th:value="${board.boardPass}">
+  내용 : <textarea name="boardContents" id="board-contents" cols="30" rows="10" class="form-control" th:text="${board.boardContents}"></textarea>
   <input type="hidden" name="boardHits" th:value="${board.boardHits}">
-  <input type="button" value="글 수정" onclick="board_update()">
+
+  <input type="button" value="글 수정" class="btn btn-primary" onclick="board_update()">
 </form>
 <a href="/">처음으로</a>
 <div th:replace="component/footer :: footer"></div>
 </body>
 <script th:inline="javascript">
   const board_update=()=>{
-    const passDB = [[${board.boardPass}]];
+
     const password = document.querySelector('input[name="boardPass"]').value;
     const id = document.querySelector('input[name="id"]').value;
     const writer = document.querySelector('input[name="boardWriter"]').value;
     const title = document.querySelector('input[name="boardTitle"]').value;
-    const contents = document.querySelector('input[name="boardContents"]').value;
+    const contents = document.querySelector('#board-contents').value;
     const hits = document.querySelector('input[name="boardHits"]').value;
-    if(passDB == password){
+
       axios({
         method:"put",
         url: "/board/"+id,
@@ -40,13 +42,10 @@
           boardHits: hits
         }
       }).then(res =>{
-        location.href="/board"+id;
+        location.href="/board/"+id;
       }).catch(err=>{
         alert("글 수정 실패")
       })
-    }else{
-      alert("글에 설정한 비밀번호가 일치하지 않습니다.")
-    }
   }
 </script>
 </html>

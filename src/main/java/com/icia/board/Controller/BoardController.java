@@ -71,10 +71,14 @@ public class BoardController {
 //        BoardService.update(boardDTO);
 //        return "redirect:/board/";
 //    }
-    @PutMapping("/board/axios/{id}")
+    @PutMapping("/board/{id}")
     public ResponseEntity update(@RequestBody BoardDTO boardDTO){
         boardService.update(boardDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
+    @DeleteMapping("/board/{id}")
+    public ResponseEntity delete(@PathVariable Long id){
+        boardService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
