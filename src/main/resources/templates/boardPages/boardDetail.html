@@ -30,7 +30,13 @@
         </tr>
         <tr>
             <th>작성날짜</th>
-            <td th:text="${board.createdAt}"></td>
+            <td th:text="*{#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        <tr th:if="${board.fileAttached==1}">
+            <th>image</th>
+            <td th:each="fileName:${board.storedFileName}">
+                <img th:src="@{|/upload/${fileName}}" width="200" height="200" alt="">
+            </td>
         </tr>
     </table>
     <div id="container">

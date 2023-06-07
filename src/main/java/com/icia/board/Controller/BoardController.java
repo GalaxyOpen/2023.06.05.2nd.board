@@ -37,7 +37,7 @@ public class BoardController {
         return "/boardPages/boardList";
     }
 
-    @GetMapping("/board/option/{id}")
+    @GetMapping("/board/{id}")
     public String findById(@PathVariable Long id, Model model){
         boardService.updateHits(id);
         BoardDTO boardDTO = null;
@@ -49,12 +49,12 @@ public class BoardController {
         model.addAttribute("board", boardDTO);
         return "/boardPages/boardDetail";
     }
-    @GetMapping("/board/{id}")
-    public String detail(@PathVariable Long id, Model model){
-        BoardDTO boardDTO = boardService.findById(id);
-        model.addAttribute("board", boardDTO);
-        return "/boardPages/boardDetail";
-    }
+//    @GetMapping("/board/{id}")
+//    public String detail(@PathVariable Long id, Model model){
+//        BoardDTO boardDTO = boardService.findById(id);
+//        model.addAttribute("board", boardDTO);
+//        return "/boardPages/boardDetail";
+//    }
     @GetMapping("/board/axios/{id}")
     public ResponseEntity detailAxios(@PathVariable("id") Long id) throws Exception {
         BoardDTO boardDTO = boardService.findById(id);

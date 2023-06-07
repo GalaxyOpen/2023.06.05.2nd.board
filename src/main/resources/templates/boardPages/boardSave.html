@@ -8,12 +8,13 @@
 <div th:replace="component/nav :: nav"></div>
 <div id="section">
  <form action="/board/save" method="post" enctype="multipart/form-data">
-  작성자 : <input type="text" name="boardWriter" id="boardWriter" required placeholder="작성자">
-  제목: <input type="text" name="boardTitle" id="boardTitle" required>
+  작성자 :      <input type="text" name="boardWriter" id="boardWriter" required placeholder="작성자">
+  제목:         <input type="text" name="boardTitle" id="boardTitle" required>
   설정 비밀번호: <input type="text" name="boardPass" id="boardPass" required>
-  글 내용 : <textarea name="boardContents" cols="30" rows="10" id="boardContents" required placeholder="글 내용"></textarea>
-  파일 첨부 : <input type="file" name="boardFile" class="form-control">
- <input type="submit" value="글 작성" class="btn btn-primary">
+  글 내용 :     <textarea name="boardContents" cols="30" rows="10" id="boardContents" required placeholder="글 내용"></textarea>
+<!-- 단일  파일 첨부 : <input type="file" name="boardFile" class="form-control">-->
+  파일 첨부 :    <input type="file" name="boardFile" class="form-control" multiple>
+                <input type="submit" value="글 작성" class="btn btn-primary">
 </form>
 </div>
 <div th:replace="component/footer :: footer"></div>

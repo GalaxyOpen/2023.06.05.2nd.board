@@ -1,6 +1,6 @@
 # server port 번호 설정
 server:
-  port: 8084
+  port: 8085
 
 # data base 연동 설정
 spring:
@@ -19,7 +19,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
 # db query log 관련 설정
 logging:
