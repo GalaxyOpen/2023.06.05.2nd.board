@@ -14,6 +14,7 @@
         <th>작성일자</th>
         <th>조회 수</th>
         <th>상세조회</th>
+        <th>삭제</th>
     </tr>
     <tr th:each="board: ${boardList}">
         <td th:text="${board.id}"></td>
@@ -21,8 +22,53 @@
         <td th:text="${board.boardWriter}"></td>
         <td th:text="${board.createdAt}"></td>
         <td th:text="${board.boardHits}"></td>
+        <td><button th:onclick="board_detail([[${board.id}]])">상세조회</button></td>
     </tr>
 </table>
+<div id="detailArea">
+</div>
 <div th:replace="component/footer :: footer"></div>
 </body>
+<script>
+    const board_detail=(id)=>{
+        //location.href="/member/+id;
+        const detailArea=document.getElementById("detailArea");
+        axios({
+            method:"get",
+            url:"/board/axios/"+id
+        }).then(res=>{
+            console.log("res",res)
+            let result=" <table class=\"table table-dark\">\n" +
+                "        <tr>\n" +
+                "            <th>번호</th>\n" +
+                "            <td th:text=\"${board.id}\"></td>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <th>작성자</th>\n" +
+                "            <td th:text=\"${board.boardWriter}\"></td>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <th>글 제목</th>\n" +
+                "            <td th:text=\"${board.boardTitle}\"></td>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <th>글 비밀번호</th>\n" +
+                "            <td th:text=\"${board.boardPass}\"></td>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <th>내용</th>\n" +
+                "            <td th:text=\"${board.boardContents}\"></td>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <th>작성날짜</th>\n" +
+                "            <td th:text=\"${board.createdAt}\"></td>\n" +
+                "        </tr>\n" +
+                "    </table>";
+
+                detailArea.innerHTML=result;
+        }).catch(err=>{
+            alert("해당 게시글이 없습니다.")
+        })
+    }
+</script>
 </html>

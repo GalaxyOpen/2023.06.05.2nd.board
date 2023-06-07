@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -35,25 +36,41 @@ public class BoardController {
         return "/boardPages/boardList";
     }
 
-    @GetMapping("/board/{id}")
+    @GetMapping("/board/option/{id}")
     public String findById(@PathVariable Long id, Model model){
         boardService.updateHits(id);
         BoardDTO boardDTO = null;
         try{
             boardDTO = boardService.findById(id);
         } catch(NoSuchElementException e){
-            return "boardPages/boardNotFound";
+            return "/boardPages/boardNotFound";
         }
         model.addAttribute("board", boardDTO);
         return "/boardPages/boardDetail";
     }
-//    @GetMapping("/board/{id}")
-//    public String detail(@PathVariable Long id, Model model){
-//        BoardDTO boardDTO = boardService.findById(id);
-//        model.addAttribute("board", boardDTO);
-//        return "/boardPages/boardDetail"
-//    }
-    @PutMapping("/board/{id}")
+    @GetMapping("/board/{id}")
+    public String detail(@PathVariable Long id, Model model){
+        BoardDTO boardDTO = boardService.findById(id);
+        model.addAttribute("board", boardDTO);
+        return "/boardPages/boardDetail";
+    }
+    @GetMapping("/board/axios/{id}")
+    public ResponseEntity detailAxios(@PathVariable("id") Long id){
+        BoardDTO boardDTO = boardService.findById(id);
+        return new ResponseEntity<>(boardDTO,HttpStatus.OK);
+    }
+    @GetMapping("/board/update/{id}")
+    public String updateForm(@PathVariable Long id, Model model){
+        BoardDTO boardDTO = boardService.findById(id);
+        model.addAttribute("board", boardDTO);
+        return "/boardPages/boardUpdate";
+    }
+    @PostMapping("/board/update/{id}")
+    public String update(@ModelAttribute BoardDTO boardDTO){
+        BoardService.update(boardDTO);
+        return "redirect:/board/";
+    }
+    @PutMapping("/board/axios/{id}")
     public ResponseEntity update(@RequestBody BoardDTO boardDTO){
         boardService.update(boardDTO);
         return new ResponseEntity<>(HttpStatus.OK);
