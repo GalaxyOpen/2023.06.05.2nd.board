@@ -47,4 +47,8 @@ public class BoardService {
         BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
         boardRepository.save(boardEntity);
     }
+    public BoardDTO detailAxios(Long id){
+        BoardEntity boardEntity = boardRepository.findById(id).orElseThrow(()-> new NoSuchElementException("글이 없습니다."));
+       return BoardDTO.toDTO(boardEntity);
+    }
 }

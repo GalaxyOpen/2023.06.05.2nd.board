@@ -33,7 +33,57 @@
             <td th:text="${board.createdAt}"></td>
         </tr>
     </table>
+    <div id="container">
+        <button onclick="list_req()" class="btn btn-close-white">목록</button>
+        <button onclick="update_req()" class="btn btn-dark">수정</button>
+        <button onclick="delete_req()" class="btn btn-danger">삭제</button>
+        <button class="btn btn-light">삭제</button>
+    </div>
+    <div id="pass-check">
+
+    </div>
 </div>
 <div th:replace="component/footer :: footer"></div>
 </body>
+<script th:inline="javascript">
+    const list_req=()=>{
+        location.href="/board";
+    }
+    const update_req=()=>{
+        document.getElementById("pass-check").innerHTML="<input type=\"text\" placeholder=\"password\" id=\"password\">\n" +
+            "        <button onclick=\"update_pass_check()\">확인</button>"
+    }
+    const delete_req=()=>{
+        document.getElementById("pass-check").innerHTML="<input type=\"text\" placeholder=\"password\" id=\"password\">\n" +
+            "        <button onclick=\"delete_pass_check()\">확인</button>"
+    }
+    const update_pass_check=()=>{
+        const password=document.getElementById("password").value;
+        const passDB=[[${board.boardPass}]];
+        const id = [[${board.id}]];
+        if(password==passDB){
+            location.href="/board/update/"+id;
+        }else{
+            alert("비밀번호가 일치하지 않습니다.")
+        }
+    }   // 수정화면을 띄우기 위한 pass_check 메소드
+    const delete_pass_check=()=>{
+        const password=document.getElementById("password").value;
+        const passDB=[[${board.boardPass}]];
+        const id = [[${board.id}]];
+        if(password==passDB){
+            // location.href="/board/delete/"+id;
+            axios({
+                method:"delete",
+                url:"/board/"+id
+            }).then(res=>{
+                location.href="/board";
+            }).catch(err=>{
+                alert("삭제 실패");
+            })
+        }else{
+            alert("비밀번호가 일치하지 않습니다.")
+        }
+    }   // 수정화면을 띄우기 위한 pass_check 메소드
+</script>
 </html>

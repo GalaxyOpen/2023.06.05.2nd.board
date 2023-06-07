@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -55,7 +56,7 @@ public class BoardController {
         return "/boardPages/boardDetail";
     }
     @GetMapping("/board/axios/{id}")
-    public ResponseEntity detailAxios(@PathVariable("id") Long id){
+    public ResponseEntity detailAxios(@PathVariable("id") Long id) throws Exception {
         BoardDTO boardDTO = boardService.findById(id);
         return new ResponseEntity<>(boardDTO,HttpStatus.OK);
     }
@@ -65,14 +66,15 @@ public class BoardController {
         model.addAttribute("board", boardDTO);
         return "/boardPages/boardUpdate";
     }
-    @PostMapping("/board/update/{id}")
-    public String update(@ModelAttribute BoardDTO boardDTO){
-        BoardService.update(boardDTO);
-        return "redirect:/board/";
-    }
+//    @PostMapping("/board/update/{id}")
+//    public String update(@ModelAttribute BoardDTO boardDTO){
+//        BoardService.update(boardDTO);
+//        return "redirect:/board/";
+//    }
     @PutMapping("/board/axios/{id}")
     public ResponseEntity update(@RequestBody BoardDTO boardDTO){
         boardService.update(boardDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }
