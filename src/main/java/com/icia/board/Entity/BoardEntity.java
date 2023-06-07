@@ -8,6 +8,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "board_table")
@@ -38,6 +40,14 @@ public class BoardEntity {
     private LocalDateTime createdAt;
     // 따로 아래 엔터티에서 넣을 필요 없음. 알아서 입력됨.
 
+    @Column
+    private int fileAttached;
+
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch=FetchType.LAZY)
+    // orphanRemoval = true : 게시글을 지우면 사진 데이터도 사라짐.
+    private List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
+    // 부모 하나에 첨부파일이 여러 개일 수 있으므로 List 타입을 준다.
+
     public static BoardEntity toSaveEntity(BoardDTO boardDTO) {
         BoardEntity boardEntity = new BoardEntity();
         boardEntity.setBoardWriter(boardDTO.getBoardWriter());
@@ -45,6 +55,7 @@ public class BoardEntity {
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setBoardHits(0);
+        boardEntity.setFileAttached(0);
         return boardEntity;
     }
 
@@ -57,6 +68,18 @@ public class BoardEntity {
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
         boardEntity.setCreatedAt(boardDTO.getCreatedAt());
+        return boardEntity;
+    }
+
+    public static BoardEntity toSaveEntityWithFile(BoardDTO boardDTO) {
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
+        boardEntity.setBoardPass(boardDTO.getBoardPass());
+        boardEntity.setBoardTitle(boardDTO.getBoardTitle());
+        boardEntity.setBoardContents(boardDTO.getBoardContents());
+        boardEntity.setBoardHits(0);
+        boardEntity.setFileAttached(1);
+        //바뀐 점이 있다면 파일 첨부가 됬기 때문에 0에서 1로 바꾼다.
         return boardEntity;
     }
 }

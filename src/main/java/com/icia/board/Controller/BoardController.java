@@ -26,7 +26,7 @@ public class BoardController {
     }
 
     @PostMapping("/board/save")
-    public String save(@ModelAttribute BoardDTO boardDTO){
+    public String save(@ModelAttribute BoardDTO boardDTO) throws IOException{
         boardService.save(boardDTO);
         return "redirect:/board/";
     }

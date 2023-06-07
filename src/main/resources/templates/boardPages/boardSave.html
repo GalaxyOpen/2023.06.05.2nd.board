@@ -7,40 +7,15 @@
 <div th:replace="component/header :: header"></div>
 <div th:replace="component/nav :: nav"></div>
 <div id="section">
- <form action="/board/save" method="post">
+ <form action="/board/save" method="post" enctype="multipart/form-data">
   작성자 : <input type="text" name="boardWriter" id="boardWriter" required placeholder="작성자">
   제목: <input type="text" name="boardTitle" id="boardTitle" required>
   설정 비밀번호: <input type="text" name="boardPass" id="boardPass" required>
   글 내용 : <textarea name="boardContents" cols="30" rows="10" id="boardContents" required placeholder="글 내용"></textarea>
+  파일 첨부 : <input type="file" name="boardFile" class="form-control">
  <input type="submit" value="글 작성" class="btn btn-primary">
 </form>
 </div>
 <div th:replace="component/footer :: footer"></div>
 </body>
-<!--<script th:inline="javascript">-->
-<!--    const mustPassword=()=> {-->
-<!--        const Password = document.getElementById("boardPassword").value;-->
-<!--        const Writer = document.getElementById("boardWriter").value;-->
-<!--        const Title = document.getElementById("boardTitle").value;-->
-<!--        const Contents = document.getElementById("boardContents").value;-->
-<!--        const submitButton = document.querySelector("input[type='submit']")-->
-<!--        Password.addEventListener("input", function () {-->
-<!--            if (Password.value.trim() !== "") {-->
-<!--                Writer.disabled = false;-->
-<!--                Title.disabled = false;-->
-<!--                Contents.disabled = false;-->
-<!--                submitButton.disabled =false;-->
-
-<!--            } else {-->
-<!--                Writer.disabled = true;-->
-<!--                Title.disabled = true;-->
-<!--                Contents.disabled = true;-->
-<!--                submitButton.disabled =true;-->
-<!--                alert("비밀번호가 일치하지 않습니다."); // 비밀번호 오류 메시지 표시-->
-
-<!--            }-->
-<!--        })-->
-<!--    }-->
-
-<!--</script>-->
 </html>

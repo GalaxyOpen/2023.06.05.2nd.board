@@ -2,6 +2,7 @@ package com.icia.board.DTO;
 
 import com.icia.board.Entity.BoardEntity;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +22,10 @@ public class BoardDTO {
     private String boardContents;
     private LocalDateTime createdAt;
     private int boardHits;
-
+    private MultipartFile boardFile;
+    private int fileAttached;
+    private String originalFileName;
+    private String storedFileName;
 
     public static BoardDTO toDTO(BoardEntity boardEntity) {
 //        BoardDTO boardDTO = new BoardDTO();
@@ -33,7 +37,8 @@ public class BoardDTO {
 //        boardDTO.setBoardHits(boardEntity.getBoardHits());
 //        boardDTO.setCreatedAt(boardEntity.getCreatedAt());
 //        return boardDTO;
-//builder 패턴 1 1이 더 가독성이 좋나?
+//builder 패턴1
+// Question : 1이 더 가독성이 좋나?
             return BoardDTO.builder()
                     .id(boardEntity.getId())
                     .boardWriter(boardEntity.getBoardWriter())
