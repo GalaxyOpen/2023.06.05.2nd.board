@@ -11,5 +11,5 @@ public class BoardFIleDTO {
     private Long id;
     private String original_file_name;
     private String stored_file_name;
-    private Long board_id;
+    private Long boardId;
 }

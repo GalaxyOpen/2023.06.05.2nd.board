@@ -26,8 +26,9 @@ public class BoardService {
 // 기본 세이브(파일 첨부 배우기 전)
 //        BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
 //        return boardRepository.save(boardEntity).getId();
+
 //        if (boardDTO.getBoardFile().isEmpty())
-            if (boardDTO.getBoardFile().get(0).isEmpty()){
+            if (boardDTO.getBoardFile()==null || boardDTO.getBoardFile().get(0).isEmpty()){
             //파일 없음
             BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
             return boardRepository.save(boardEntity).getId();

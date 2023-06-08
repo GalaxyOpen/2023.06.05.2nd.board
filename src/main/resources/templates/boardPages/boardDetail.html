@@ -6,109 +6,158 @@
 <body>
 <div th:replace="component/header :: header"></div>
 <div th:replace="component/nav :: nav"></div>
+
 <div id="section">
-    <table class="table table-dark">
+    <table class="table table-hover">
         <tr>
-            <th>번호</th>
+            <th>id</th>
             <td th:text="${board.id}"></td>
         </tr>
         <tr>
-            <th>작성자</th>
-            <td th:text="${board.boardWriter}"></td>
-        </tr>
-        <tr>
-            <th>글 제목</th>
+            <th>title</th>
             <td th:text="${board.boardTitle}"></td>
         </tr>
         <tr>
-            <th>글 비밀번호</th>
-            <td th:text="${board.boardPass}"></td>
+            <th>writer</th>
+            <td th:text="${board.boardWriter}"></td>
         </tr>
         <tr>
-            <th>내용</th>
+            <th>date</th>
+            <td th:text="${board.createdAt}"></td>
+        </tr>
+        <tr>
+            <th>hits</th>
+            <td th:text="${board.boardHits}"></td>
+        </tr>
+        <tr>
+            <th>contents</th>
             <td th:text="${board.boardContents}"></td>
         </tr>
-        <tr>
-            <th>작성날짜</th>
-            <td th:text="*{#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
-        </tr>
-        <tr th:if="${board.fileAttached==1}">
+        <tr th:if="${board.fileAttached == 1}">
             <th>image</th>
-            <td th:each="fileName:${board.storedFileName}">
+            <td th:each="fileName: ${board.storedFileName}">
                 <img th:src="@{|/upload/${fileName}}" width="200" height="200" alt="">
             </td>
         </tr>
     </table>
-    <div id="container">
-        <button onclick="list_req()" class="btn btn-primary">목록</button>
-        <button onclick="req('update')" class="btn btn-dark">수정</button>
-        <button onclick="req('delete')" class="btn btn-danger">삭제</button>
+    <div class="container">
+        <button class="btn btn-primary" onclick="list_req()">목록</button>
+        <button class="btn btn-warning" onclick="req('update')">수정</button>
+        <button class="btn btn-danger" onclick="req('delete')">삭제</button>
     </div>
     <div id="pass-check">
 
     </div>
+
+    <div class="container" id="comment-write">
+        <input type="text" id="comment-writer" placeholder="작성자">
+        <input type="text" id="comment-contents" placeholder="내용">
+        <button onclick="comment_write()">댓글작성</button>
+    </div>
+    <div class="container" id="comment-list">
+        <div th:if="${commentList == null}">
+            <p>작성된 댓글이 없습니다.</p>
+        </div>
+        <div th:unless="${commentList == null}">
+            <table class="table">
+                <tr>
+                    <th>id</th>
+                    <th>writer</th>
+                    <th>contents</th>
+                    <th>date</th>
+                </tr>
+                <tr th:each="comment: ${commentList}">
+                    <td th:text="${comment.id}"></td>
+                    <td th:text="${comment.commentWriter}"></td>
+                    <td th:text="${comment.commentContents}"></td>
+                    <td th:text="${comment.createdAt}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
 </div>
+
 <div th:replace="component/footer :: footer"></div>
 </body>
 <script th:inline="javascript">
-    const list_req=()=>{
-        location.href="/board/";
+    const comment_list = (commentList) => {
+        console.log("댓글 목록 함수", commentList);
+        const resultArea = document.querySelector("#comment-list");
+        let output = "        <table class=\"table\">\n" +
+            "            <tr>\n" +
+            "                <th>id</th>\n" +
+            "                <th>writer</th>\n" +
+            "                <th>contents</th>\n" +
+            "                <th>date</th>\n" +
+            "            </tr>";
+        for (let i in commentList) {
+            output += "<tr>\n" +
+                "                <td>" + commentList[i].id + "</td>\n" +
+                "                <td>" + commentList[i].commentWriter + "</td>\n" +
+                "                <td>" + commentList[i].commentContents + "</td>\n" +
+                "                <td>" + commentList[i].createdAt + "</td>\n" +
+                "            </tr>";
+        }
+        output += "</table>";
+        resultArea.innerHTML = output;
     }
-    const req=(type)=>{
-        // type은 그냥 매개변수 이름임
-        console.log("type",type);
-        document.getElementById("pass-check").innerHTML="<input type=\"text\" placeholder=\"password\" id=\"password\">\n" +
-            "        <button onclick=\"pass_check('"+type+"')\">확인</button>"
-    }
-    // const delete_req=()=>{
-    //     document.getElementById("pass-check").innerHTML="<input type=\"text\" placeholder=\"password\" id=\"password\">\n" +
-    //         "        <button onclick=\"delete_pass_check()\">확인</button>"
-    // }
-    const pass_check=(type)=>{
-        console.log("pass_check type 변수 값", type);
-        const password=document.getElementById("password").value;
-        const passDB=[[${board.boardPass}]];
-        const id = [[${board.id}]];
-        if(password==passDB){
-            if(type == "update"){
-                location.href="/board/update/"+id;
-            }else if(type == "delete"){
-                axios({
-                    method:"delete",
-                    url:"/board/"+id
-                }).then(res=>{
-                    location.href="/board/";
-                }).catch(err=>{
-                    alert("삭제 실패");
-                })
-            }
 
-        }else{
-            alert("비밀번호가 일치하지 않습니다.")
+    const comment_write = () => {
+        const writer = document.querySelector("#comment-writer").value;
+        const contents = document.querySelector("#comment-contents").value;
+        const boardId = [[${board.id}]];
+        axios({
+            method: "post",
+            url: "/comment/save",
+            data: {
+                commentWriter: writer,
+                commentContents: contents,
+                boardId: boardId
+            }
+        }).then(res => {
+            console.log("res", res);
+            console.log("댓글 목록", res.data);
+            document.querySelector("#comment-writer").value = "";
+            document.querySelector("#comment-contents").value = "";
+            comment_list(res.data);
+        }).catch(err => {
+            console.log("err", err);
+        });
+    }
+
+    const list_req = () => {
+        location.href = "/board/";
+    }
+
+    const req = (type) => {
+        console.log("type", type);
+        document.getElementById("pass-check").innerHTML = "<input type=\"text\" placeholder=\"password\" id=\"password\">\n" +
+            "        <button onclick=\"pass_check('" + type + "')\">확인</button>";
+    }
+
+    const pass_check = (type) => {
+        console.log("pass_check type 변수 값", type);
+        const password = document.getElementById("password").value;
+        const passDB = [[${board.boardPass}]];
+        const id = [[${board.id}]];
+        if (password == passDB) {
+            if (type == "update") {
+                location.href = "/board/update/" + id;
+            } else if (type == "delete") {
+                // location.href = "/board/delete/"+id;
+                axios({
+                    method: "delete",
+                    url: "/board/" + id
+                }).then(res => {
+                    location.href = "/board/";
+                }).catch(err => {
+                    alert("삭제 실패!!");
+                });
+            }
+        } else {
+            alert("비밀번호 불일치!!");
         }
     }
-    // 수정화면을 띄우기 위한 pass_check 메소드
-    // 수정과 삭제를 합쳤다.
-
-
-    // const delete_pass_check=()=>{
-    //     const password=document.getElementById("password").value;
-    //     const passDB=[[${board.boardPass}]];
-    //     const id = [[${board.id}]];
-    //     if(password==passDB){
-    //         // location.href="/board/delete/"+id;
-    //         axios({
-    //             method:"delete",
-    //             url:"/board/"+id
-    //         }).then(res=>{
-    //             location.href="/board";
-    //         }).catch(err=>{
-    //             alert("삭제 실패");
-    //         })
-    //     }else{
-    //         alert("비밀번호가 일치하지 않습니다.")
-    //     }
-    // }
-    // 수정화면을 띄우기 위한 pass_check 메소드
 </script>
 </html>

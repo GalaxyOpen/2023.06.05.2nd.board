@@ -1,7 +1,9 @@
 package com.icia.board.Controller;
 
 import com.icia.board.DTO.BoardDTO;
+import com.icia.board.DTO.CommentDTO;
 import com.icia.board.Service.BoardService;
+import com.icia.board.Service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.NoSuchElementException;
 
 public class BoardController {
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @GetMapping("/board/save")
     public String saveForm(){
@@ -40,21 +43,22 @@ public class BoardController {
     @GetMapping("/board/{id}")
     public String findById(@PathVariable Long id, Model model){
         boardService.updateHits(id);
-        BoardDTO boardDTO = null;
         try{
-            boardDTO = boardService.findById(id);
+            BoardDTO boardDTO = boardService.findById(id);
+            model.addAttribute("board", boardDTO);
+            List<CommentDTO> commentDTOList = commentService.findAll(id);
+            if (commentDTOList.size() > 0) {
+                model.addAttribute("commentList", commentDTOList);
+            }else{
+                model.addAttribute("commentList", null);
+            }
+            return "/boardPages/boardDetail";
         } catch(NoSuchElementException e){
             return "/boardPages/boardNotFound";
         }
-        model.addAttribute("board", boardDTO);
-        return "/boardPages/boardDetail";
+
     }
-//    @GetMapping("/board/{id}")
-//    public String detail(@PathVariable Long id, Model model){
-//        BoardDTO boardDTO = boardService.findById(id);
-//        model.addAttribute("board", boardDTO);
-//        return "/boardPages/boardDetail";
-//    }
+
     @GetMapping("/board/axios/{id}")
     public ResponseEntity detailAxios(@PathVariable("id") Long id) throws Exception {
         BoardDTO boardDTO = boardService.findById(id);

@@ -4,17 +4,16 @@ package com.icia.board.Entity;
 import com.icia.board.DTO.BoardDTO;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "board_table")
-@Getter @Setter
-public class BoardEntity {
+@Getter
+@Setter
+public class BoardEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,10 +34,10 @@ public class BoardEntity {
     private int boardHits;
     // default=0을 적용하는 법도 있긴하지만 불편한 점이 있어 쓰지 않음.
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-    // 따로 아래 엔터티에서 넣을 필요 없음. 알아서 입력됨.
+//    @CreationTimestamp
+//    @Column(updatable = false)
+//    private LocalDateTime createdAt;
+//    // 따로 아래 엔터티에서 넣을 필요 없음. 알아서 입력됨.
 
     @Column
     private int fileAttached;
@@ -46,6 +45,11 @@ public class BoardEntity {
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch=FetchType.LAZY)
     // orphanRemoval = true : 게시글을 지우면 사진 데이터도 사라짐.
     private List<BoardFileEntity> boardFileEntityList = new ArrayList<>();
+    // 부모 하나에 첨부파일이 여러 개일 수 있으므로 List 타입을 준다.
+
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch=FetchType.LAZY)
+    // orphanRemoval = true : 게시글을 지우면 사진 데이터도 사라짐.
+    private List<CommentEntity> CommentEntityList = new ArrayList<>();
     // 부모 하나에 첨부파일이 여러 개일 수 있으므로 List 타입을 준다.
 
     public static BoardEntity toSaveEntity(BoardDTO boardDTO) {
@@ -67,7 +71,6 @@ public class BoardEntity {
         boardEntity.setBoardWriter(boardDTO.getBoardWriter());
         boardEntity.setBoardTitle(boardDTO.getBoardTitle());
         boardEntity.setBoardContents(boardDTO.getBoardContents());
-        boardEntity.setCreatedAt(boardDTO.getCreatedAt());
         return boardEntity;
     }
 
