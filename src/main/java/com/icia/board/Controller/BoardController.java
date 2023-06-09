@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -45,11 +44,18 @@ public class BoardController {
 
     // 우리가 요청 받는 주소 값의 형태는 /board?page=1
     @GetMapping("/board")
-    public String paging(@PageableDefault(page=1)Pageable pageable, Model model){
+    public String paging(@PageableDefault(page=1)Pageable pageable,
+                         @RequestParam(value="type", required=false, defaultValue = "")String type,
+                         @RequestParam(value="q", required = false, defaultValue = "")String q,
+                         Model model){
 //        System.out.println("pageable = " + pageable);
         System.out.println("page="+pageable.getPageNumber());
-        Page<BoardDTO> boardDTOS =boardService.paging(pageable);
-        model.addAttribute("boardList", boardDTOS);
+        Page<BoardDTO> boardDTOS =boardService.paging(pageable, type, q);
+        if (boardDTOS.getTotalElements()==0){
+            model.addAttribute("boardList", null);
+        }else{
+            model.addAttribute("boardList", boardDTOS);
+        }
         // 시작페이지(startPage), 마지막페이지(endPage)값 계산
         // 하단에 보여줄 페이지 갯수 3개
         // PageDTO 없이 페이징 처리할 예정.
@@ -65,14 +71,22 @@ public class BoardController {
 //        }
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        model.addAttribute("type", type);
+        model.addAttribute("q", q);
 
         return "/boardPages/boardPaging";
     }
 
     @GetMapping("/board/{id}")
-    public String findById(@PathVariable Long id, @RequestParam("page") int page, Model model){
+    public String findById(@PathVariable Long id,
+                           @RequestParam(value="page", required = false, defaultValue = "0") int page,
+                           @RequestParam("type") String type,
+                           @RequestParam("q") String q,
+                           Model model){
         boardService.updateHits(id);
         model.addAttribute("page",page);
+        model.addAttribute("type", type);
+        model.addAttribute("q", q);
         try{
             BoardDTO boardDTO = boardService.findById(id);
             model.addAttribute("board", boardDTO);

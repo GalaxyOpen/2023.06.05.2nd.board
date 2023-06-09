@@ -129,8 +129,9 @@
     const list_req = () => {
         // location.href = "/board/";
         const page = [[${page}]];
-        // location.href="/board?page="+[[${page}]];
-        location.href="/board?page="+page;
+        const type = [[${type}]];
+        const q = [[${q}]];
+        location.href = "/board?page=" + page + "&type=" + type + "&q=" + q;
     }
 
     const req = (type) => {
@@ -162,5 +163,18 @@
             alert("비밀번호 불일치!!");
         }
     }
+
+    const delete_pass_check = () => {
+        const password = document.getElementById("password").value;
+        const passDB = [[${board.boardPass}]];
+        const id = [[${board.id}]];
+        if (password == passDB) {
+
+        } else {
+            alert("비밀번호 불일치!!");
+        }
+    }
+
+
 </script>
 </html>

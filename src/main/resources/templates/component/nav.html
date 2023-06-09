@@ -41,22 +41,38 @@
             <!-- +예전에 우리가 페이징 했던 방식대로 주소 값이 나온다.  -->
 
         </li>
-        <li class="login-name" id="login-area">
-        </li>
+        <div id="menu search">
+            <select name="type" id="type">
+                <option value="writer">작성자</option>
+                <option value="title">제목</option>
+            </select>
+            <input type="text" placeholder="검색어를 입력하세요" id="q" style="display: inline-block;">
+            <i class="bi bi-search" onclick="search_func()">검색</i>
+        </div>
+        <script>
+            const search_func=()=>{
+                const type=document.querySelector("#type").value;
+                const q = document.querySelector("#q").value;
+                location.href="/board?type="+type+"&q="+q;
+            }
+        </script>
     </ul>
-    <a href="/">처음으로 돌아가기</a>
-    <script th:inline="javascript">
-        const loginArea = document.getElementById("login-area");
-        const loginEmail= [[${session.loginEmail}]];
-        console.log(loginEmail.length);
+<!--    <a href="/">처음으로 돌아가기</a>-->
+<!--    <script th:inline="javascript">-->
+<!--        const loginArea = document.getElementById("login-area");-->
+<!--        const loginEmail= [[${session.loginEmail}]];-->
+<!--        console.log(loginEmail.length);-->
 
-        if(loginEmail.length !=0){
-            loginArea.innerHTML = "<a href='/member/myPage' style='color: black;'>"+loginEmail +"님 어서오세요!</a>"+
-                "<a href='/member/logout'>logout</a>";
-        }else{
-            loginArea.innerHTML = "<a href='/member/login'>Login</a>";
-        }
-    </script>
+<!--        if(loginEmail.length !=0){-->
+<!--            loginArea.innerHTML = "<a href='/member/myPage' style='color: black;'>"+loginEmail +"님 어서오세요!</a>"+-->
+<!--                "<a href='/member/logout'>logout</a>";-->
+<!--        }else{-->
+<!--            loginArea.innerHTML = "<a href='/member/login'>Login</a>";-->
+<!--        }-->
+<!--    </script>-->
+
 </div>
+
 </body>
+
 </html>

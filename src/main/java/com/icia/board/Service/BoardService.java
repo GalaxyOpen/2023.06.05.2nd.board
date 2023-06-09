@@ -108,14 +108,20 @@ public class BoardService {
     public void delete(Long id) {
         boardRepository.deleteById(id);
     }
-
-
-    public Page<BoardDTO> paging(Pageable pageable) {
+    public Page<BoardDTO> paging(Pageable pageable, String type, String q) {
         int page = pageable.getPageNumber() -1;
         int pageLimit = 5;
-        Page<BoardEntity> boardEntities =
-        boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
-        // 몇 페이지 볼것인지, 몇개를 볼건지, 어떤 정렬로 볼것인지를 정해서 모두 보여주는 형태의 findAll로 해서
+        // 만약 한 페이지에 보고 싶은 수를 바꾸고 싶다면 = 이후의 값을 바꾸면 된다.
+        Page<BoardEntity> boardEntities = null;
+        if(type.equals("title")){
+            boardEntities = boardRepository.findByBoardTitleContaining(q,PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+            // 정렬 기준을 바꾸고 싶다면 properties : "id" 값을 바꾸면 된다.
+        }else if(type.equals("writer")){
+            boardEntities=boardRepository.findByBoardWriterContaining(q,PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+        }else{
+            boardEntities = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+            // 몇 페이지 볼것인지, 몇개를 볼건지, 어떤 정렬로 볼것인지를 정해서 모두 보여주는 형태의 findAll로 해서
+        }
         Page<BoardDTO> boardDTOS = boardEntities.map(boardEntity -> BoardDTO.builder()
                                                 .id(boardEntity.getId())
                                                 .boardTitle(boardEntity.getBoardTitle())
