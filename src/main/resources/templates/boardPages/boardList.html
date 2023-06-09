@@ -6,7 +6,7 @@
 <body>
 <div th:replace="component/header :: header"></div>
 <div th:replace="component/nav :: nav"></div>
-<table>
+<table class="table table-hover">
     <tr>
         <th>글 번호</th>
         <th>제목</th>
@@ -18,7 +18,7 @@
         <td th:text="${board.id}"></td>
         <td><a th:href="@{|/board/${board.id}|}" th:text="${board.boardTitle}"></a></td>
         <td th:text="${board.boardWriter}"></td>
-        <td th:text="*{#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm:ss')}">
+        <td th:text="${board.createdAt}"></td>
         <td th:text="${board.boardHits}"></td>
     </tr>
 </table>

@@ -123,4 +123,66 @@ public class BoardTest {
         System.out.println("boardEntities.isFirst() = " + boardList.isFirst()); // 첫페이지인지 여부
         System.out.println("boardEntities.isLast() = " + boardList.isLast()); // 마지막페이지인지 여부
     }
+
+    @Test
+    @Transactional
+    @DisplayName("검색 기능 테스트")
+    public void searchTest(){
+//        List<BoardEntity> boardEntityList = boardRepository.findByBoardTitleContaining("2");
+        String q = "30";
+        List<BoardEntity> boardEntityList = boardRepository.findByBoardTitleContainingOrOrBoardWriterContainingOrderByIdDesc(q, q);
+        // 둘 다 q 값을 같은 값을 주어야 한다
+        // 왜? 제목이나 작성자 둘다 30이 이썽야 하기에
+
+        boardEntityList.forEach(boardEntity -> {
+            System.out.println(BoardDTO.toDTO(boardEntity));
+        });
+    }
+    @Test
+    @Transactional
+    @DisplayName("작성자로 검색 기능 테스트")
+    public void searchWriterTest(){
+        List<BoardEntity> boardEntityList = boardRepository.findByBoardWriterContaining("2");
+        boardEntityList.forEach(boardEntity -> {
+            System.out.println(BoardDTO.toDTO(boardEntity));
+        });
+    }
+// Sort.by(Sort.Direction.DESC, "id")
+@Test
+@Transactional
+@DisplayName("검색 기능 정렬 테스트")
+public void searchSortTest(){
+    List<BoardEntity> boardEntityList = boardRepository.findByBoardTitleContainingOrderByIdDesc("2" );
+    boardEntityList.forEach(boardEntity -> {
+        System.out.println(BoardDTO.toDTO(boardEntity));
+    });
+}
+    @Test
+    @Transactional
+    @DisplayName("검색 결과 페이징")
+    public void searchPaging(){
+        String q="2";
+        int page = 0;
+        int pageLimit =3;
+        Page<BoardEntity> boardEntities = boardRepository.findByBoardWriterContaining(q, PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+
+        Page<BoardDTO> boardList=boardEntities.map(boardEntity ->
+                BoardDTO.builder()
+                        .id(boardEntity.getId())
+                        .boardWriter(boardEntity.getBoardWriter())
+                        .boardTitle(boardEntity.getBoardTitle())
+                        .boardHits(boardEntity.getBoardHits())
+                        .createdAt(UtilClass.dateFormat(boardEntity.getCreatedAt()))
+                        .build()
+        );
+        System.out.println("boardEntities.getContent() = " + boardList.getContent()); // 요청페이지에 들어있는 데이터
+        System.out.println("boardEntities.getTotalElements() = " + boardList.getTotalElements()); // 전체 글갯수
+        System.out.println("boardEntities.getNumber() = " + boardList.getNumber()); // 요청페이지(jpa 기준)
+        System.out.println("boardEntities.getTotalPages() = " + boardList.getTotalPages()); // 전체 페이지 갯수
+        System.out.println("boardEntities.getSize() = " + boardList.getSize()); // 한페이지에 보여지는 글갯수
+        System.out.println("boardEntities.hasPrevious() = " + boardList.hasPrevious()); // 이전페이지 존재 여부
+        System.out.println("boardEntities.isFirst() = " + boardList.isFirst()); // 첫페이지인지 여부
+        System.out.println("boardEntities.isLast() = " + boardList.isLast()); // 마지막페이지인지 여부
+    }
+
 }

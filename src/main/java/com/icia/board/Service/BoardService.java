@@ -5,7 +5,12 @@ import com.icia.board.Entity.BoardEntity;
 import com.icia.board.Entity.BoardFileEntity;
 import com.icia.board.Repository.BoardFileRepository;
 import com.icia.board.Repository.BoardRepository;
+import com.icia.board.Util.UtilClass;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -102,5 +107,22 @@ public class BoardService {
 
     public void delete(Long id) {
         boardRepository.deleteById(id);
+    }
+
+
+    public Page<BoardDTO> paging(Pageable pageable) {
+        int page = pageable.getPageNumber() -1;
+        int pageLimit = 5;
+        Page<BoardEntity> boardEntities =
+        boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
+        // 몇 페이지 볼것인지, 몇개를 볼건지, 어떤 정렬로 볼것인지를 정해서 모두 보여주는 형태의 findAll로 해서
+        Page<BoardDTO> boardDTOS = boardEntities.map(boardEntity -> BoardDTO.builder()
+                                                .id(boardEntity.getId())
+                                                .boardTitle(boardEntity.getBoardTitle())
+                                                .boardWriter(boardEntity.getBoardWriter())
+                                                .createdAt(UtilClass.dateFormat(boardEntity.getCreatedAt()))
+                                                .boardHits(boardEntity.getBoardHits())
+                                                .build());
+        return boardDTOS;
     }
 }
