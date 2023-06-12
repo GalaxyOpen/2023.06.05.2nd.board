@@ -53,7 +53,12 @@
     color: white;
 }
 
-
+#saveForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 화면 전체 높이에 대한 비율로 조절 */
+}
 
 #section table {
     margin: auto;
@@ -84,7 +89,9 @@ input {
     float: right;
 }
 
-
+#nav #menu search{
+    float : right;
+}
 
 
 

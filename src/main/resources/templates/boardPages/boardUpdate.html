@@ -7,16 +7,19 @@
 <div th:replace="component/header :: header"></div>
 <div th:replace="component/nav :: nav"></div>
 <form action="/board/update" method="post">
+
   <input type="hidden" name="id" class="form-control" th:value="${board.id}">
   작성자 : <input type="text" name="boardWriter" class="form-control" th:value="${board.boardWriter}">
-
   제목 : <input type="text" name="boardTitle" class="form-control" th:value="${board.boardTitle}">
   <input type="hidden" name="boardPass" th:value="${board.boardPass}">
   내용 : <textarea name="boardContents" id="board-contents" cols="30" rows="10" class="form-control" th:text="${board.boardContents}"></textarea>
   <input type="hidden" name="boardHits" th:value="${board.boardHits}">
 
   <input type="button" value="글 수정" class="btn btn-primary" onclick="board_update()">
+
+
 </form>
+
 <a href="/">처음으로</a>
 <div th:replace="component/footer :: footer"></div>
 </body>
